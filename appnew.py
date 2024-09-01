@@ -75,3 +75,29 @@ def process_video(video_file_path):
         out.release()
 
         # Join all detected texts into a single string
+        full_text = "\n".join(detected_texts)
+
+        return output_path, full_text
+    except Exception as e:
+        return None, f"Error processing video: {str(e)}"
+
+# Streamlit interface
+st.title("Video OCR Application")
+
+uploaded_video = st.file_uploader("Upload a video file", type=["mp4", "avi"])
+
+if uploaded_video is not None:
+    with st.spinner('Processing video...'):
+        # Save the uploaded video to a temporary file
+        temp_video_path = os.path.join(tempfile.gettempdir(), 'temp_video' + os.path.splitext(uploaded_video.name)[1])
+        with open(temp_video_path, 'wb') as f:
+            f.write(uploaded_video.read())
+
+        # Process the video
+        output_video_path, detected_text = process_video(temp_video_path)
+
+        if output_video_path:
+            st.video(output_video_path)
+            st.text_area("Detected Text", value=detected_text, height=300)
+        else:
+            st.error("An error occurred while processing the video.")
