@@ -2,7 +2,7 @@ import easyocr
 import numpy as np
 import cv2
 from PIL import Image
-import gradio as gr
+import streamlit as st
 import tempfile
 import os
 
@@ -75,18 +75,3 @@ def process_video(video_file_path):
         out.release()
 
         # Join all detected texts into a single string
-        full_text = "\n".join(detected_texts)
-
-        return output_path, full_text
-    except Exception as e:
-        return None, f"Error processing video: {str(e)}"
-
-# Create Gradio interface
-iface = gr.Interface(
-    fn=process_video,
-    inputs=gr.Video(),  # Input video file
-    outputs=[gr.Video(), gr.Textbox()]  # Output video file and detected text
-)
-
-# Launch the interface
-iface.launch()
